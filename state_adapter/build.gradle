@@ -1,24 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "29.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
 }
@@ -27,4 +16,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api 'com.android.support:recyclerview-v7:27.0.0'
+}
+
+publish {
+    userOrg = 'simplepeng'
+    groupId = 'me.simple'
+    artifactId = 'state-adapter'
+    publishVersion = '1.0.0'
+    desc = '用包装器模式给RecyclerView添加一个有加载状态的Adapter(loading,empty,error,retry)'
+    website = 'https://github.com/simplepeng/StateAdapter'
 }
