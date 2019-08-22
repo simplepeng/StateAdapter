@@ -22,6 +22,8 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int STATE_CONTENT = 4;
     private int mCurrentState = STATE_LOADING;
 
+    private OnRetryItemClickListener mOnRetryItemClickListener;
+
     private StateAdapter(RecyclerView.Adapter adapter) {
         this(adapter, new BaseStateView());
     }
@@ -38,6 +40,11 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public static StateAdapter wrap(RecyclerView.Adapter adapter, AbsStateView stateView) {
         return new StateAdapter(adapter, stateView);
+    }
+
+    public StateAdapter setOnRetryItemClickListener(OnRetryItemClickListener listener) {
+        this.mOnRetryItemClickListener = listener;
+        return this;
     }
 
     @NonNull
@@ -63,8 +70,16 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         int viewType = getItemViewType(position);
         if (viewType == VIEW_TYPE_STATE) {
-            StateViewHolder holder = (StateViewHolder) viewHolder;
+            final StateViewHolder holder = (StateViewHolder) viewHolder;
             holder.setState(mCurrentState);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnRetryItemClickListener == null || mCurrentState != STATE_RETRY) return;
+                    mOnRetryItemClickListener.onClick(holder, holder.getAdapterPosition());
+                }
+            });
         } else {
             mRealAdapter.onBindViewHolder(viewHolder, position);
         }
@@ -159,5 +174,10 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private void notifyStateVH() {
         notifyItemChanged(0);
+    }
+
+
+    public interface OnRetryItemClickListener {
+        void onClick(StateViewHolder holder, int position);
     }
 }

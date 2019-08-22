@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 import me.simple.state_adapter.StateAdapter;
+import me.simple.state_adapter.StateViewHolder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +34,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         realAdapter = new RealAdapter();
-        stateAdapter = StateAdapter.wrap(realAdapter);
+        stateAdapter = StateAdapter.wrap(realAdapter).
+                setOnRetryItemClickListener(new StateAdapter.OnRetryItemClickListener() {
+                    @Override
+                    public void onClick(StateViewHolder holder, int position) {
+                        contentClick(findViewById(R.id.btn_content));
+                    }
+                });
         recyclerView.setAdapter(stateAdapter);
 
         getData();
