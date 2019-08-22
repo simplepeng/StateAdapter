@@ -50,20 +50,6 @@ public class MainActivity extends AppCompatActivity {
         emptyClick(findViewById(R.id.btn_empty));
     }
 
-    private void loadMore() {
-        recyclerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                items.add("load more");
-                for (int i = 0; i < 20; i++) {
-                    items.add(String.valueOf(i));
-                    realAdapter.notifyItemRangeInserted(items.size() - 20, 20);
-                }
-            }
-        }, 2000);
-
-    }
-
     public void emptyClick(View view) {
         items.clear();
         realAdapter.notifyDataSetChanged();

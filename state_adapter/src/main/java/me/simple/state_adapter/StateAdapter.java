@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
+@SuppressWarnings({"unchecked","WeakerAccess","unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_STATE = 1;
@@ -65,9 +68,13 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return mRealAdapter.onCreateViewHolder(viewGroup, viewType);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
         int viewType = getItemViewType(position);
         if (viewType == VIEW_TYPE_STATE) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
@@ -81,7 +88,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
         } else {
-            mRealAdapter.onBindViewHolder(viewHolder, position);
+            mRealAdapter.onBindViewHolder(viewHolder, position, payloads);
         }
     }
 
@@ -97,6 +104,30 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public int getItemViewType(int position) {
         if (position == 0 && mRealAdapter.getItemCount() == 0) return VIEW_TYPE_STATE;
         return super.getItemViewType(position);
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
+        if (holder instanceof StateViewHolder) return false;
+        return mRealAdapter.onFailedToRecycleView(holder);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof StateViewHolder) return;
+        mRealAdapter.onViewAttachedToWindow(holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof StateViewHolder) return;
+        mRealAdapter.onViewDetachedFromWindow(holder);
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        if (holder instanceof StateViewHolder) return;
+        mRealAdapter.onViewRecycled(holder);
     }
 
     @Override
