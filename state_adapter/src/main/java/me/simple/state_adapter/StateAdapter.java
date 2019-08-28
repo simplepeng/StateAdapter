@@ -1,5 +1,6 @@
 package me.simple.state_adapter;
 
+import android.database.Observable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
@@ -135,16 +138,14 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mRealAdapter.onViewRecycled(holder);
     }
 
-    private boolean mIsRegister = false;
-
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         setFullSpan(recyclerView);
 
-        if (!mIsRegister) {
+
+        if (!isRegistered()) {
             mRealAdapter.registerAdapterDataObserver(mDataObserver);
-            mIsRegister = true;
         }
 
         mRealAdapter.onAttachedToRecyclerView(recyclerView);
@@ -154,8 +155,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
 
-        mRealAdapter.unregisterAdapterDataObserver(mDataObserver);
-        mIsRegister = false;
+        if (isRegistered()) {
+            mRealAdapter.unregisterAdapterDataObserver(mDataObserver);
+        }
 
         mRealAdapter.onDetachedFromRecyclerView(recyclerView);
     }
@@ -175,6 +177,24 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
         }
+    }
+
+    private boolean isRegistered() {
+        boolean isRegistered = false;
+        try {
+            Class<? extends RecyclerView.Adapter> clazz = RecyclerView.Adapter.class;
+            Field field = clazz.getDeclaredField("mObservable");
+            field.setAccessible(true);
+            Observable observable = (Observable) field.get(mRealAdapter);
+
+            Field observersField = Observable.class.getDeclaredField("mObservers");
+            observersField.setAccessible(true);
+            ArrayList<Object> list = (ArrayList<Object>) observersField.get(observable);
+            isRegistered = list.contains(mDataObserver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isRegistered;
     }
 
     private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {

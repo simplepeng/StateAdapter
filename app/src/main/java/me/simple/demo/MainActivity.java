@@ -98,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 for (int i = 0; i < 10; i++) {
                     items.add(String.valueOf(i));
-                    stateAdapter.showContent();
+//                    stateAdapter.showContent();
+                    realAdapter.notifyDataSetChanged();
                 }
             }
         }, 2000);
