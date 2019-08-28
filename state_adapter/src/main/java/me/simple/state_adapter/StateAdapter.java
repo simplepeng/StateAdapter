@@ -13,11 +13,10 @@ import java.util.List;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final int VIEW_TYPE_STATE = 1;
+    private final int VIEW_TYPE_STATE = 1111;
 
     private RecyclerView.Adapter mRealAdapter;
     private IStateView mStateView;
-    private StateViewHolder mStateViewHolder;
 
     public static final int STATE_LOADING = 0;
     public static final int STATE_EMPTY = 1;
@@ -62,8 +61,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
             View stateView = inflater.inflate(mStateView.setLayoutRes(), viewGroup, false);
             mStateView.onCreate(stateView);
-            this.mStateViewHolder = new StateViewHolder(stateView, mStateView);
-            return mStateViewHolder;
+            return new StateViewHolder(stateView, mStateView);
         }
 
         return mRealAdapter.onCreateViewHolder(viewGroup, viewType);
@@ -104,7 +102,13 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemViewType(int position) {
         if (position == 0 && mRealAdapter.getItemCount() == 0) return VIEW_TYPE_STATE;
-        return super.getItemViewType(position);
+        return mRealAdapter.getItemViewType(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (position == 0 && mRealAdapter.getItemCount() == 0) return position;
+        return mRealAdapter.getItemId(position);
     }
 
     @Override
