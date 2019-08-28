@@ -2,14 +2,16 @@ package me.simple.state_adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-@SuppressWarnings({"unchecked","WeakerAccess","unused"})
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_STATE = 1;
@@ -133,6 +135,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        setFullSpan(recyclerView);
 
         mRealAdapter.registerAdapterDataObserver(mDataObserver);
         mRealAdapter.onAttachedToRecyclerView(recyclerView);
@@ -144,6 +147,23 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         mRealAdapter.unregisterAdapterDataObserver(mDataObserver);
         mRealAdapter.onDetachedFromRecyclerView(recyclerView);
+    }
+
+    private void setFullSpan(RecyclerView recyclerView) {
+        final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager == null) return;
+
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gm = (GridLayoutManager) layoutManager;
+            gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    int viewType = getItemViewType(position);
+                    if (viewType == VIEW_TYPE_STATE) return gm.getSpanCount();
+                    return 1;
+                }
+            });
+        }
     }
 
     private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
