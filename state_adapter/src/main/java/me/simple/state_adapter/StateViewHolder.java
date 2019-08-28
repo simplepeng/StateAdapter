@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 
 public class StateViewHolder extends RecyclerView.ViewHolder {
 
-    private AbsStateView mStateView;
+    private IStateView mStateView;
 
-    public StateViewHolder(@NonNull View itemView, AbsStateView stateView) {
+    public StateViewHolder(@NonNull View itemView, IStateView stateView) {
         super(itemView);
         ViewGroup.LayoutParams params = itemView.getLayoutParams();
         if (params instanceof StaggeredGridLayoutManager.LayoutParams) {

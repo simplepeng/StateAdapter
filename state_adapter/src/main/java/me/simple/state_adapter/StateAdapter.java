@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int VIEW_TYPE_STATE = 1;
 
     private RecyclerView.Adapter mRealAdapter;
-    private AbsStateView mStateView;
+    private IStateView mStateView;
     private StateViewHolder mStateViewHolder;
 
     public static final int STATE_LOADING = 0;
@@ -33,7 +32,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this(adapter, new BaseStateView());
     }
 
-    private StateAdapter(RecyclerView.Adapter adapter, AbsStateView stateView) {
+    private StateAdapter(RecyclerView.Adapter adapter, IStateView stateView) {
         if (adapter == null) throw new NullPointerException("adapter can not be null");
         this.mRealAdapter = adapter;
         this.mStateView = stateView;
@@ -43,7 +42,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new StateAdapter(adapter);
     }
 
-    public static StateAdapter wrap(RecyclerView.Adapter adapter, AbsStateView stateView) {
+    public static StateAdapter wrap(RecyclerView.Adapter adapter, IStateView stateView) {
         return new StateAdapter(adapter, stateView);
     }
 
@@ -132,12 +131,18 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mRealAdapter.onViewRecycled(holder);
     }
 
+    private boolean mIsRegister = false;
+
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         setFullSpan(recyclerView);
 
-        mRealAdapter.registerAdapterDataObserver(mDataObserver);
+        if (!mIsRegister) {
+            mRealAdapter.registerAdapterDataObserver(mDataObserver);
+            mIsRegister = true;
+        }
+
         mRealAdapter.onAttachedToRecyclerView(recyclerView);
     }
 
@@ -146,6 +151,8 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         super.onDetachedFromRecyclerView(recyclerView);
 
         mRealAdapter.unregisterAdapterDataObserver(mDataObserver);
+        mIsRegister = false;
+
         mRealAdapter.onDetachedFromRecyclerView(recyclerView);
     }
 
@@ -218,10 +225,10 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyStateVH();
     }
 
-    public void showContent() {
-        mCurrentState = STATE_CONTENT;
-        notifyDataSetChanged();
-    }
+//    public void showContent() {
+//        mCurrentState = STATE_CONTENT;
+//        notifyDataSetChanged();
+//    }
 
     private void notifyStateVH() {
         notifyItemChanged(0);

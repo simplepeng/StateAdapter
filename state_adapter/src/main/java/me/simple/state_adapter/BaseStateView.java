@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-public class BaseStateView implements AbsStateView {
+public class BaseStateView implements IStateView {
 
     private ProgressBar mProgressBar;
     private ImageView mEmpty;

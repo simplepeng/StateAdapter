@@ -2,7 +2,7 @@ package me.simple.state_adapter;
 
 import android.view.View;
 
-public interface AbsStateView {
+public interface IStateView {
 
     int setLayoutRes();
 
