@@ -34,13 +34,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         realAdapter = new RealAdapter();
-        stateAdapter = StateAdapter.wrap(realAdapter).
-                setOnRetryItemClickListener(new StateAdapter.OnRetryItemClickListener() {
-                    @Override
-                    public void onClick(StateViewHolder holder, int position) {
-                        contentClick(findViewById(R.id.btn_content));
-                    }
-                });
+        stateAdapter = StateAdapter.wrap(realAdapter).setOnRetryItemClickListener(new StateAdapter.OnRetryItemClickListener() {
+            @Override
+            public void onClick(StateViewHolder holder, int position) {
+                contentClick(findViewById(R.id.btn_content));
+            }
+        });
+
+        stateAdapter = StateAdapter.wrap(realAdapter, new CustomStateView());
+
         recyclerView.setAdapter(stateAdapter);
 
         getData();
