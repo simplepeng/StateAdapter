@@ -1,15 +1,14 @@
 package me.simple.state_adapter;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 public class BaseStateView implements IStateView {
 
     private ProgressBar mProgressBar;
-    private ImageView mEmpty;
-    private ImageView mError;
-    private ImageView mRetry;
+    private View mEmpty;
+    private View mError;
+    private View mRetry;
 
     @Override
     public int setLayoutRes() {
@@ -19,9 +18,9 @@ public class BaseStateView implements IStateView {
     @Override
     public void onCreate(View stateView) {
         mProgressBar = stateView.findViewById(R.id.sa_progressBar);
-        mEmpty = stateView.findViewById(R.id.sa_empty);
-        mError = stateView.findViewById(R.id.sa_error);
-        mRetry = stateView.findViewById(R.id.sa_retry);
+        mEmpty = stateView.findViewById(R.id.layout_empty);
+        mError = stateView.findViewById(R.id.layout_error);
+        mRetry = stateView.findViewById(R.id.layout_retry);
     }
 
     @Override
