@@ -2,8 +2,10 @@ package me.simple.demo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         realAdapter = new RealAdapter();
         stateAdapter = StateAdapter.wrap(realAdapter).setOnRetryItemClickListener(new StateAdapter.OnRetryItemClickListener() {
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        stateAdapter = StateAdapter.wrap(realAdapter, new CustomStateView());
+//        stateAdapter = StateAdapter.wrap(realAdapter, new CustomStateView());
 
         recyclerView.setAdapter(stateAdapter);
 
