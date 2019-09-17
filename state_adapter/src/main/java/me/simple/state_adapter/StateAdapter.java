@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
@@ -72,13 +73,12 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
-
+        onBindViewHolder(viewHolder, position, Collections.emptyList());
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
-        int viewType = getItemViewType(position);
-        if (viewType == VIEW_TYPE_STATE) {
+        if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
             holder.setState(mCurrentState);
 
