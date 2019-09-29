@@ -54,6 +54,27 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return this;
     }
 
+    @Override
+    public int getItemCount() {
+        LogHelper.d("getItemCount state == " + mCurrentState);
+        if (isTypeState()) {
+            return 1;
+        }
+        return mRealAdapter.getItemCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0 && isTypeState()) return VIEW_TYPE_STATE;
+        return mRealAdapter.getItemViewType(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (position == 0 && isTypeState()) return position;
+        return mRealAdapter.getItemId(position);
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -95,26 +116,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public int getItemCount() {
-        if (mRealAdapter.getItemCount() == 0) {
-            return 1;
-        }
-        return mRealAdapter.getItemCount();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0 && mRealAdapter.getItemCount() == 0) return VIEW_TYPE_STATE;
-        return mRealAdapter.getItemViewType(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        if (position == 0 && mRealAdapter.getItemCount() == 0) return position;
-        return mRealAdapter.getItemId(position);
-    }
-
-    @Override
     public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
         if (holder instanceof StateViewHolder) return false;
         return mRealAdapter.onFailedToRecycleView(holder);
@@ -142,7 +143,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         setFullSpan(recyclerView);
-
 
         if (!isRegistered()) {
             mRealAdapter.registerAdapterDataObserver(mDataObserver);
@@ -249,15 +249,19 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyStateVH();
     }
 
-//    public void showContent() {
-//        mCurrentState = STATE_CONTENT;
-//        notifyDataSetChanged();
-//    }
-
-    private void notifyStateVH() {
-        notifyItemChanged(0);
+    public void showContent() {
+        mCurrentState = STATE_CONTENT;
+        notifyDataSetChanged();
     }
 
+    private void notifyStateVH() {
+        StateAdapter.this.notifyDataSetChanged();
+    }
+
+    private boolean isTypeState() {
+        return mCurrentState == STATE_LOADING || mCurrentState == STATE_EMPTY
+                || mCurrentState == STATE_ERROR || mCurrentState == STATE_RETRY;
+    }
 
     public interface OnRetryItemClickListener {
         void onClick(StateViewHolder holder, int position);

@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void emptyClick(View view) {
-        items.clear();
-        realAdapter.notifyDataSetChanged();
-
         stateAdapter.showLoading();
         recyclerView.postDelayed(new Runnable() {
             @Override
@@ -67,13 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 stateAdapter.showEmpty();
             }
         }, 2000);
-
     }
 
     public void errorClick(View view) {
-//        items.clear();
-//        realAdapter.notifyDataSetChanged();
-
         stateAdapter.showLoading();
         recyclerView.postDelayed(new Runnable() {
             @Override
@@ -84,9 +77,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retryClick(View view) {
-//        items.clear();
-//        realAdapter.notifyDataSetChanged();
-
         stateAdapter.showLoading();
         recyclerView.postDelayed(new Runnable() {
             @Override
@@ -97,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void contentClick(View view) {
+        items.clear();
+        realAdapter.notifyDataSetChanged();
+
         stateAdapter.showLoading();
 
         recyclerView.postDelayed(new Runnable() {
@@ -104,8 +97,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 for (int i = 0; i < 10; i++) {
                     items.add(String.valueOf(i));
-//                    stateAdapter.showContent();
-                    realAdapter.notifyDataSetChanged();
+                    stateAdapter.showContent();
                 }
             }
         }, 2000);
