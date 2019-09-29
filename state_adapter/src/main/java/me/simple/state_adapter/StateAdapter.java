@@ -191,31 +191,37 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
+            mCurrentState = STATE_CONTENT;
             StateAdapter.this.notifyDataSetChanged();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
+            mCurrentState = STATE_CONTENT;
             StateAdapter.this.notifyItemRangeChanged(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
+            mCurrentState = STATE_CONTENT;
             StateAdapter.this.notifyItemRangeChanged(positionStart, itemCount, payload);
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
+            mCurrentState = STATE_CONTENT;
             StateAdapter.this.notifyItemRangeInserted(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
+            mCurrentState = STATE_CONTENT;
             StateAdapter.this.notifyItemRangeRemoved(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            mCurrentState = STATE_CONTENT;
             StateAdapter.this.notifyItemRangeChanged(fromPosition, toPosition, itemCount);
         }
     };
