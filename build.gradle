@@ -35,5 +35,5 @@ ext{
 
     groupId = "me.simple"
     artifactId = "state-adapter"
-    publishVersion = "1.0.0"
+    publishVersion = "1.0.1"
 }

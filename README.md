@@ -4,7 +4,7 @@
 
 ## 默认
 
-图片来源网络下载的AC娘表情包，如需使用请自定义，嘻嘻...
+默认状态图片来源网络AC娘表情包，如需使用最好自定义，嘻嘻...
 
 |  Loading  | Empty | Error | Retry |
 |  :--:  | :--:  |  :--:  |  :--:  |
@@ -14,7 +14,7 @@
 ## 依赖
 
 ```groovy
-implementation 'me.simple:state-adapter:1.0.0'
+implementation 'me.simple:state-adapter:1.0.1'
 ```
 
 
@@ -32,7 +32,7 @@ stateAdapter.showEmpty();
 stateAdapter.showError();
 stateAdapter.showRetry();
 stateAdapter.showContent();
-setOnItemViewClickListener(int viewId, View.OnClickListener listener)
+stateAdapter.setOnItemViewClickListener(int viewId, View.OnClickListener listener)
 ```
 
 ### 自定义视图
