@@ -38,10 +38,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         realAdapter = new RealAdapter();
-        stateAdapter = StateAdapter.wrap(realAdapter).setOnRetryItemClickListener(new StateAdapter.OnRetryItemClickListener() {
+        stateAdapter = StateAdapter.wrap(realAdapter);
+        stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
             @Override
-            public void onClick(StateViewHolder holder, int position) {
-                contentClick(findViewById(R.id.btn_content));
+            public void onClick(View v) {
+                contentClick(v);
             }
         });
 

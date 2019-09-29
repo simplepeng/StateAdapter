@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -29,7 +31,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int STATE_CONTENT = 4;
     private int mCurrentState = STATE_LOADING;
 
-    private OnRetryItemClickListener mOnRetryItemClickListener;
+    private HashMap<Integer, View.OnClickListener> mViewClicks = new HashMap<>();
 
     private StateAdapter(RecyclerView.Adapter adapter) {
         this(adapter, new BaseStateView());
@@ -47,11 +49,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public static StateAdapter wrap(RecyclerView.Adapter adapter, IStateView stateView) {
         return new StateAdapter(adapter, stateView);
-    }
-
-    public StateAdapter setOnRetryItemClickListener(OnRetryItemClickListener listener) {
-        this.mOnRetryItemClickListener = listener;
-        return this;
     }
 
     @Override
@@ -84,16 +81,18 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         if (viewType == VIEW_TYPE_STATE) {
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-            View stateView = inflater.inflate(mStateView.setLayoutRes(), viewGroup, false);
-            mStateView.onCreate(stateView);
-            return new StateViewHolder(stateView, mStateView);
+            View stateItemView = inflater.inflate(mStateView.setLayoutRes(), viewGroup, false);
+            StateViewHolder stateViewHolder = new StateViewHolder(stateItemView, mStateView);
+            mStateView.onCreate(stateItemView);
+            setClick(stateItemView, stateViewHolder);
+            return stateViewHolder;
         }
 
         return mRealAdapter.onCreateViewHolder(viewGroup, viewType);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         onBindViewHolder(viewHolder, position, Collections.emptyList());
     }
 
@@ -102,14 +101,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
             holder.setState(mCurrentState);
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnRetryItemClickListener == null || mCurrentState != STATE_RETRY) return;
-                    mOnRetryItemClickListener.onClick(holder, holder.getAdapterPosition());
-                }
-            });
         } else {
             mRealAdapter.onBindViewHolder(viewHolder, position, payloads);
         }
@@ -263,7 +254,17 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 || mCurrentState == STATE_ERROR || mCurrentState == STATE_RETRY;
     }
 
-    public interface OnRetryItemClickListener {
-        void onClick(StateViewHolder holder, int position);
+    private void setClick(final View itemView, final StateViewHolder stateViewHolder) {
+        for (Map.Entry<Integer, View.OnClickListener> entry : mViewClicks.entrySet()) {
+            Integer viewId = entry.getKey();
+            View.OnClickListener listener = entry.getValue();
+            View child = itemView.findViewById(viewId);
+            child.setOnClickListener(listener);
+        }
+    }
+
+    public StateAdapter setOnItemViewClickListener(int viewId, View.OnClickListener listener) {
+        mViewClicks.put(viewId, listener);
+        return this;
     }
 }
