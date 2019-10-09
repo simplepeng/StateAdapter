@@ -14,7 +14,7 @@
 ## 依赖
 
 ```groovy
-implementation 'me.simple:state-adapter:1.0.1'
+implementation 'me.simple:state-adapter:1.0.2'
 ```
 
 
@@ -48,3 +48,8 @@ stateAdapter = StateAdapter.wrap(realAdapter, new CustomStateView());
 recyclerView.setAdapter(stateAdapter);
 ```
 
+## 版本迭代
+
+* v1.0.2-默认不`show-loading`
+* v1.0.1-fix type state bug
+* v1.0.0-初次提交

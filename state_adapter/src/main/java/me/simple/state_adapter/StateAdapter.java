@@ -24,12 +24,13 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private RecyclerView.Adapter mRealAdapter;
     private IStateView mStateView;
 
+    public static final int STATE_NORMAL = -1;
     public static final int STATE_LOADING = 0;
     public static final int STATE_EMPTY = 1;
     public static final int STATE_ERROR = 2;
     public static final int STATE_RETRY = 3;
     public static final int STATE_CONTENT = 4;
-    private int mCurrentState = STATE_LOADING;
+    private int mCurrentState = STATE_NORMAL;
 
     private HashMap<Integer, View.OnClickListener> mViewClicks = new HashMap<>();
 
@@ -68,7 +69,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public long getItemId(int position) {
-        if (position == 0 && isTypeState()) return position;
+        if (position == 0 && isTypeState()) return super.getItemId(position);
         return mRealAdapter.getItemId(position);
     }
 
@@ -256,8 +257,10 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private boolean isTypeState() {
-        return mCurrentState == STATE_LOADING || mCurrentState == STATE_EMPTY
-                || mCurrentState == STATE_ERROR || mCurrentState == STATE_RETRY;
+        return mCurrentState == STATE_LOADING
+                || mCurrentState == STATE_EMPTY
+                || mCurrentState == STATE_ERROR
+                || mCurrentState == STATE_RETRY;
     }
 
     private void setClick(final View itemView, final StateViewHolder stateViewHolder) {
