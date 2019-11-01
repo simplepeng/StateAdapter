@@ -1,10 +1,10 @@
 package me.simple.state_adapter;
 
 import android.database.Observable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +54,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        LogHelper.d("getItemCount state == " + mCurrentState);
         if (isTypeState()) {
             return 1;
         }
@@ -76,6 +75,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        LogHelper.d("onCreateViewHolder");
         if (mStateView == null) {
             throw new NullPointerException("State View no implements");
         }
@@ -99,6 +99,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
+        LogHelper.d("onBindViewHolder");
         if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
             holder.setState(mCurrentState);
