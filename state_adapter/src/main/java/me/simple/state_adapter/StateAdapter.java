@@ -97,7 +97,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
         if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
-            holder.setState(mTypeState);
         } else {
             mRealAdapter.onBindViewHolder(viewHolder, position, payloads);
         }
@@ -112,6 +111,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         if (holder instanceof StateViewHolder) {
+            StateViewHolder stateViewHolder = (StateViewHolder) holder;
+            stateViewHolder.setState(mTypeState);
+            getStateView(mTypeState).onAttachedToWindow(stateViewHolder);
             return;
         }
         mRealAdapter.onViewAttachedToWindow(holder);
@@ -120,6 +122,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         if (holder instanceof StateViewHolder) {
+            StateViewHolder stateViewHolder = (StateViewHolder) holder;
+            int typeSate = stateViewHolder.getTypeSate();
+            getStateView(typeSate).onDetachedFromWindow(stateViewHolder);
             return;
         }
         mRealAdapter.onViewDetachedFromWindow(holder);

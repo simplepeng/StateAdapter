@@ -3,10 +3,13 @@ package me.simple.state_adapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import android.view.View;
 import android.view.ViewGroup;
 
 public class StateViewHolder extends RecyclerView.ViewHolder {
+
+    private int mTypeState;
 
     public StateViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -16,7 +19,11 @@ public class StateViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void setState(int state) {
+    public void setState(int typeState) {
+        this.mTypeState = typeState;
+    }
 
+    public int getTypeSate() {
+        return mTypeState;
     }
 }
