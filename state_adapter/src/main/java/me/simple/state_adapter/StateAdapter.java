@@ -1,10 +1,13 @@
 package me.simple.state_adapter;
 
 import android.database.Observable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,40 +19,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.simple.state_adapter.abs.StateEmptyView;
+import me.simple.state_adapter.abs.StateErrorView;
+import me.simple.state_adapter.abs.StateLoadingView;
+import me.simple.state_adapter.abs.StateRetryView;
+import me.simple.state_adapter.abs.StateView;
+
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final int VIEW_TYPE_STATE = 1111;
+//    private final int VIEW_TYPE_STATE = 1111;
 
     private RecyclerView.Adapter mRealAdapter;
-    private IStateView mStateView;
+//    private StateView mStateView;
 
-    public static final int STATE_NORMAL = -1;
-    public static final int STATE_LOADING = 0;
-    public static final int STATE_EMPTY = 1;
-    public static final int STATE_ERROR = 2;
-    public static final int STATE_RETRY = 3;
-    public static final int STATE_CONTENT = 4;
-    private int mCurrentState = STATE_NORMAL;
+    public static final int TYPE_STATE_NORMAL = -1;
+    public static final int TYPE_STATE_LOADING = 0;
+    public static final int TYPE_STATE_EMPTY = 1;
+    public static final int TYPE_STATE_ERROR = 2;
+    public static final int TYPE_STATE_RETRY = 3;
+    public static final int TYPE_STATE_CONTENT = 4;
+    private int mTypeState = TYPE_STATE_NORMAL;
+
+    //    private HashMap<Integer, StateView> mStateViewMap = new HashMap<>();
+    private SparseArray<StateView> mStateViewMap = new SparseArray<>();
 
     private HashMap<Integer, View.OnClickListener> mViewClicks = new HashMap<>();
 
     private StateAdapter(RecyclerView.Adapter adapter) {
-        this(adapter, new BaseStateView());
-    }
-
-    private StateAdapter(RecyclerView.Adapter adapter, IStateView stateView) {
         if (adapter == null) throw new NullPointerException("adapter can not be null");
         this.mRealAdapter = adapter;
-        this.mStateView = stateView;
     }
 
     public static StateAdapter wrap(RecyclerView.Adapter adapter) {
         return new StateAdapter(adapter);
-    }
-
-    public static StateAdapter wrap(RecyclerView.Adapter adapter, IStateView stateView) {
-        return new StateAdapter(adapter, stateView);
     }
 
     @Override
@@ -62,7 +65,8 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 && isTypeState()) return VIEW_TYPE_STATE;
+//        LogHelper.d("getItemViewType");
+        if (position == 0 && isTypeState()) return mTypeState;
         return mRealAdapter.getItemViewType(position);
     }
 
@@ -76,15 +80,13 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         LogHelper.d("onCreateViewHolder");
-        if (mStateView == null) {
-            throw new NullPointerException("State View no implements");
-        }
 
-        if (viewType == VIEW_TYPE_STATE) {
+        if (isTypeState()) {
+            StateView stateView = getStateView(mTypeState);
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-            View stateItemView = inflater.inflate(mStateView.setLayoutRes(), viewGroup, false);
-            StateViewHolder stateViewHolder = new StateViewHolder(stateItemView, mStateView);
-            mStateView.onCreate(stateItemView);
+            View stateItemView = inflater.inflate(stateView.setLayoutRes(), viewGroup, false);
+            StateViewHolder stateViewHolder = new StateViewHolder(stateItemView);
+            stateView.onCreate(stateItemView);
             setClick(stateItemView, stateViewHolder);
             return stateViewHolder;
         }
@@ -99,10 +101,10 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
-        LogHelper.d("onBindViewHolder");
+        LogHelper.d("onBindViewHolder => " + viewHolder.getClass().getName());
         if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
-            holder.setState(mCurrentState);
+            holder.setState(mTypeState);
         } else {
             mRealAdapter.onBindViewHolder(viewHolder, position, payloads);
         }
@@ -116,13 +118,19 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
-        if (holder instanceof StateViewHolder) return;
+//        LogHelper.d("onViewAttachedToWindow => "+holder.getClass().getName());
+        if (holder instanceof StateViewHolder) {
+            return;
+        }
         mRealAdapter.onViewAttachedToWindow(holder);
     }
 
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        if (holder instanceof StateViewHolder) return;
+//        LogHelper.d("onViewDetachedFromWindow => "+holder.getClass().getName());
+        if (holder instanceof StateViewHolder) {
+            return;
+        }
         mRealAdapter.onViewDetachedFromWindow(holder);
     }
 
@@ -155,6 +163,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mRealAdapter.onDetachedFromRecyclerView(recyclerView);
     }
 
+    /**
+     *
+     */
     private void setFullSpan(RecyclerView recyclerView) {
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager == null) return;
@@ -165,13 +176,16 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public int getSpanSize(int position) {
                     int viewType = getItemViewType(position);
-                    if (viewType == VIEW_TYPE_STATE) return gm.getSpanCount();
+                    if (isTypeState()) return gm.getSpanCount();
                     return 1;
                 }
             });
         }
     }
 
+    /**
+     *
+     */
     private boolean isRegistered() {
         boolean isRegistered = false;
         try {
@@ -193,63 +207,103 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
-            mCurrentState = STATE_CONTENT;
+            mTypeState = TYPE_STATE_CONTENT;
             StateAdapter.this.notifyDataSetChanged();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
-            mCurrentState = STATE_CONTENT;
+            mTypeState = TYPE_STATE_CONTENT;
             StateAdapter.this.notifyItemRangeChanged(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
-            mCurrentState = STATE_CONTENT;
+            mTypeState = TYPE_STATE_CONTENT;
             StateAdapter.this.notifyItemRangeChanged(positionStart, itemCount, payload);
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            mCurrentState = STATE_CONTENT;
+            mTypeState = TYPE_STATE_CONTENT;
             StateAdapter.this.notifyItemRangeInserted(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            mCurrentState = STATE_CONTENT;
+            mTypeState = TYPE_STATE_CONTENT;
             StateAdapter.this.notifyItemRangeRemoved(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-            mCurrentState = STATE_CONTENT;
+            mTypeState = TYPE_STATE_CONTENT;
             StateAdapter.this.notifyItemRangeChanged(fromPosition, toPosition, itemCount);
         }
     };
 
+    public StateAdapter register(StateView stateView) {
+        if (stateView instanceof StateEmptyView) {
+            mStateViewMap.put(TYPE_STATE_EMPTY, stateView);
+        } else if (stateView instanceof StateLoadingView) {
+            mStateViewMap.put(TYPE_STATE_LOADING, stateView);
+        } else if (stateView instanceof StateErrorView) {
+            mStateViewMap.put(TYPE_STATE_ERROR, stateView);
+        } else if (stateView instanceof StateRetryView) {
+            mStateViewMap.put(TYPE_STATE_RETRY, stateView);
+        }
+        return this;
+    }
+
+    private StateView getStateView(int type) {
+        StateView stateView = mStateViewMap.get(type);
+        if (stateView == null) {
+            throw new NullPointerException("do you have register this type? type is" + getTypeName(mTypeState));
+        }
+        return stateView;
+    }
+
+    private String getTypeName(int type) {
+        String typeName = "";
+        switch (type) {
+            case TYPE_STATE_EMPTY:
+                typeName = "EMPTY";
+                break;
+            case TYPE_STATE_LOADING:
+                typeName = "LOADING";
+                break;
+            case TYPE_STATE_ERROR:
+                typeName = "ERROR";
+                break;
+            case TYPE_STATE_RETRY:
+                typeName = "RETRY";
+                break;
+        }
+        return typeName;
+    }
+
     public void showLoading() {
-        mCurrentState = STATE_LOADING;
+        mTypeState = TYPE_STATE_LOADING;
         notifyStateVH();
     }
 
     public void showEmpty() {
-        mCurrentState = STATE_EMPTY;
+        mTypeState = TYPE_STATE_EMPTY;
         notifyStateVH();
     }
 
     public void showError() {
-        mCurrentState = STATE_ERROR;
+        mTypeState = TYPE_STATE_ERROR;
         notifyStateVH();
     }
 
     public void showRetry() {
-        mCurrentState = STATE_RETRY;
+        mTypeState = TYPE_STATE_RETRY;
         notifyStateVH();
     }
 
     public void showContent() {
-        mCurrentState = STATE_CONTENT;
+        mTypeState = TYPE_STATE_CONTENT;
         notifyDataSetChanged();
     }
 
@@ -258,10 +312,10 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private boolean isTypeState() {
-        return mCurrentState == STATE_LOADING
-                || mCurrentState == STATE_EMPTY
-                || mCurrentState == STATE_ERROR
-                || mCurrentState == STATE_RETRY;
+        return mTypeState == TYPE_STATE_LOADING
+                || mTypeState == TYPE_STATE_EMPTY
+                || mTypeState == TYPE_STATE_ERROR
+                || mTypeState == TYPE_STATE_RETRY;
     }
 
     private void setClick(final View itemView, final StateViewHolder stateViewHolder) {
@@ -269,7 +323,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             Integer viewId = entry.getKey();
             View.OnClickListener listener = entry.getValue();
             View child = itemView.findViewById(viewId);
-            child.setOnClickListener(listener);
+            if (child != null) {
+                child.setOnClickListener(listener);
+            }
         }
     }
 

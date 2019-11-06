@@ -8,31 +8,15 @@ import android.view.ViewGroup;
 
 public class StateViewHolder extends RecyclerView.ViewHolder {
 
-    private IStateView mStateView;
-
-    public StateViewHolder(@NonNull View itemView, IStateView stateView) {
+    public StateViewHolder(@NonNull View itemView) {
         super(itemView);
         ViewGroup.LayoutParams params = itemView.getLayoutParams();
         if (params instanceof StaggeredGridLayoutManager.LayoutParams) {
             ((StaggeredGridLayoutManager.LayoutParams) params).setFullSpan(true);
         }
-        this.mStateView = stateView;
     }
 
     public void setState(int state) {
-        switch (state) {
-            case StateAdapter.STATE_LOADING:
-                mStateView.showLoading();
-                break;
-            case StateAdapter.STATE_EMPTY:
-                mStateView.showEmpty();
-                break;
-            case StateAdapter.STATE_ERROR:
-                mStateView.showError();
-                break;
-            case StateAdapter.STATE_RETRY:
-                mStateView.showRetry();
-                break;
-        }
+
     }
 }

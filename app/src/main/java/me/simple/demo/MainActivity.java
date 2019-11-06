@@ -1,10 +1,12 @@
 package me.simple.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.simple.state_adapter.StateAdapter;
+import me.simple.state_adapter.impl.SimpleEmptyView;
+import me.simple.state_adapter.impl.SimpleErrorView;
+import me.simple.state_adapter.impl.SimpleLoadingView;
+import me.simple.state_adapter.impl.SimpleRetryView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +41,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         realAdapter = new RealAdapter();
-        stateAdapter = StateAdapter.wrap(realAdapter);
+        stateAdapter = StateAdapter.wrap(realAdapter)
+                .register(new SimpleEmptyView())
+                .register(new SimpleErrorView())
+                .register(new SimpleRetryView())
+                .register(new SimpleLoadingView());
+
         stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
