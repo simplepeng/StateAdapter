@@ -28,10 +28,7 @@ import me.simple.state_adapter.abs.StateView;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-//    private final int VIEW_TYPE_STATE = 1111;
-
     private RecyclerView.Adapter mRealAdapter;
-//    private StateView mStateView;
 
     public static final int TYPE_STATE_NORMAL = -111;
     public static final int TYPE_STATE_LOADING = 111;
@@ -41,10 +38,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int TYPE_STATE_CONTENT = 555;
     private int mTypeState = TYPE_STATE_NORMAL;
 
-    //    private HashMap<Integer, StateView> mStateViewMap = new HashMap<>();
     private SparseArray<StateView> mStateViewMap = new SparseArray<>();
 
-    private HashMap<Integer, View.OnClickListener> mViewClicks = new HashMap<>();
+    private SparseArray<View.OnClickListener> mViewClicks = new SparseArray<>();
 
     private StateAdapter(RecyclerView.Adapter adapter) {
         if (adapter == null) throw new NullPointerException("adapter can not be null");
@@ -65,7 +61,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-//        LogHelper.d("getItemViewType");
         if (position == 0 && isTypeState()) return mTypeState;
         return mRealAdapter.getItemViewType(position);
     }
@@ -79,8 +74,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        LogHelper.d("onCreateViewHolder");
-
         if (isTypeState()) {
             StateView stateView = getStateView(mTypeState);
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
@@ -92,7 +85,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             setClick(stateItemView, stateViewHolder);
             return stateViewHolder;
         }
-
         return mRealAdapter.onCreateViewHolder(viewGroup, viewType);
     }
 
@@ -103,7 +95,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
-        LogHelper.d("onBindViewHolder => " + viewHolder.getClass().getName());
         if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
             holder.setState(mTypeState);
@@ -120,7 +111,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
-//        LogHelper.d("onViewAttachedToWindow => "+holder.getClass().getName());
         if (holder instanceof StateViewHolder) {
             return;
         }
@@ -129,7 +119,6 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-//        LogHelper.d("onViewDetachedFromWindow => "+holder.getClass().getName());
         if (holder instanceof StateViewHolder) {
             return;
         }
@@ -244,6 +233,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     };
 
+    /**
+     * 注册TYPE
+     */
     public StateAdapter register(StateView stateView) {
         if (stateView instanceof StateEmptyView) {
             mStateViewMap.put(TYPE_STATE_EMPTY, stateView);
@@ -321,12 +313,12 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void setClick(final View itemView, final StateViewHolder stateViewHolder) {
-        for (Map.Entry<Integer, View.OnClickListener> entry : mViewClicks.entrySet()) {
-            Integer viewId = entry.getKey();
-            View.OnClickListener listener = entry.getValue();
+        for (int i = 0; i < mViewClicks.size(); i++) {
+            int viewId = mViewClicks.keyAt(i);
+            View.OnClickListener clickListener = mViewClicks.valueAt(i);
             View child = itemView.findViewById(viewId);
             if (child != null) {
-                child.setOnClickListener(listener);
+                child.setOnClickListener(clickListener);
             }
         }
     }
