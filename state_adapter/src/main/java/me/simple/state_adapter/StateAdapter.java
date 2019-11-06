@@ -33,12 +33,12 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private RecyclerView.Adapter mRealAdapter;
 //    private StateView mStateView;
 
-    public static final int TYPE_STATE_NORMAL = -1;
-    public static final int TYPE_STATE_LOADING = 0;
-    public static final int TYPE_STATE_EMPTY = 1;
-    public static final int TYPE_STATE_ERROR = 2;
-    public static final int TYPE_STATE_RETRY = 3;
-    public static final int TYPE_STATE_CONTENT = 4;
+    public static final int TYPE_STATE_NORMAL = -111;
+    public static final int TYPE_STATE_LOADING = 111;
+    public static final int TYPE_STATE_EMPTY = 222;
+    public static final int TYPE_STATE_ERROR = 333;
+    public static final int TYPE_STATE_RETRY = 444;
+    public static final int TYPE_STATE_CONTENT = 555;
     private int mTypeState = TYPE_STATE_NORMAL;
 
     //    private HashMap<Integer, StateView> mStateViewMap = new HashMap<>();
@@ -85,8 +85,10 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             StateView stateView = getStateView(mTypeState);
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
             View stateItemView = inflater.inflate(stateView.setLayoutRes(), viewGroup, false);
+
             StateViewHolder stateViewHolder = new StateViewHolder(stateItemView);
             stateView.onCreate(stateItemView);
+
             setClick(stateItemView, stateViewHolder);
             return stateViewHolder;
         }
