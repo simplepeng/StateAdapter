@@ -1,6 +1,6 @@
 # StateAdapter
 
-用包装器模式给RecyclerView添加一个有加载状态的Adapter(loading,empty,error,retry)
+用装饰器模式给RecyclerView添加一个有加载状态的Adapter(loading,empty,error,retry)
 
 ## 默认
 
@@ -8,7 +8,7 @@
 
 |  Loading  | Empty | Error | Retry |
 |  :--:  | :--:  |  :--:  |  :--:  |
-| ![](https://raw.githubusercontent.com/simplepeng/ImageRepo/master/preview_loading.png) | ![](https://raw.githubusercontent.com/simplepeng/ImageRepo/master/preview_empty.png) | ![](https://raw.githubusercontent.com/simplepeng/ImageRepo/master/preview_error.png) | ![](https://raw.githubusercontent.com/simplepeng/ImageRepo/master/preview_retry.png) |
+| ![](https://i.loli.net/2019/11/06/9emTI2Wkj36Opdl.png) | ![](https://i.loli.net/2019/11/06/VJqFStfwnMHN7dy.png) | ![](https://i.loli.net/2019/11/06/ERNpLygI1oM9tPb.png) | ![](https://i.loli.net/2019/11/06/igtEjTVl85Cov2Z.png) |
 
 
 ## 依赖
