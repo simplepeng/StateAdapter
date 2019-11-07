@@ -1,5 +1,7 @@
 package me.simple.demo;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -14,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +31,10 @@ import me.simple.state_adapter.impl.SimpleRetryView;
 public class MainActivity extends AppCompatActivity {
 
     private StateAdapter stateAdapter;
-    private RealAdapter realAdapter;
     private RecyclerView recyclerView;
+
+    //    private RealAdapter realAdapter;
+    private BrvahAdapter brvahAdapter;
 
     private List<String> items = new ArrayList<>();
 
@@ -42,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
 //        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        realAdapter = new RealAdapter();
-        stateAdapter = StateAdapter.wrap(realAdapter)
+//        realAdapter = new RealAdapter();
+        brvahAdapter = new BrvahAdapter(items);
+
+        stateAdapter = StateAdapter.wrap(brvahAdapter)
                 .register(new SimpleEmptyView())
                 .register(new SimpleErrorView())
                 .register(new SimpleRetryView())
@@ -97,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void contentClick(View view) {
         items.clear();
-        realAdapter.notifyDataSetChanged();
+//        realAdapter.notifyDataSetChanged();
+        brvahAdapter.notifyDataSetChanged();
 
         stateAdapter.showLoading();
 
@@ -121,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < 10; i++) {
                     items.add(String.valueOf(i));
                 }
-                realAdapter.notifyItemRangeInserted(items.size() - 11, 11);
+//                realAdapter.notifyItemRangeInserted(items.size() - 11, 11);
+                brvahAdapter.notifyItemRangeInserted(items.size() - 11, 11);
             }
         }, 2000);
     }
@@ -130,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new VH(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false));
+            return new VH(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_layout, parent, false));
         }
 
         @Override
@@ -151,6 +163,19 @@ public class MainActivity extends AppCompatActivity {
         public VH(View itemView) {
             super(itemView);
             tvItem = itemView.findViewById(R.id.tv_item);
+        }
+    }
+
+
+    static class BrvahAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+
+        public BrvahAdapter(@Nullable List<String> data) {
+            super(R.layout.item_layout, data);
+        }
+
+        @Override
+        protected void convert(@NonNull BaseViewHolder helper, String item) {
+            helper.setText(R.id.tv_item, item);
         }
     }
 }
