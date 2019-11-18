@@ -37,7 +37,7 @@ publish {
     groupId = rootProject.ext.groupId
     artifactId = rootProject.ext.artifactId
     publishVersion = rootProject.ext.publishVersion
-    desc = '用包装器模式给RecyclerView添加一个有加载状态的Adapter(loading,empty,error,retry)'
+    desc = '用装饰器模式给RecyclerView添加一个有加载状态的Adapter(loading,empty,error,retry)'
     website = 'https://github.com/simplepeng/StateAdapter'
 }
 

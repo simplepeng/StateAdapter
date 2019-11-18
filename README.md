@@ -1,6 +1,10 @@
 # StateAdapter
 
-用装饰器模式给RecyclerView添加一个有加载状态的Adapter(loading,empty,error,retry)
+用装饰器模式给RecyclerView添加一个有加载状态布局的Adapter
+
+* 完美支持原生RecyclerView.Adapter
+* 完美支持**[BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)**
+* 完美支持**[MultiType](https://github.com/drakeet/MultiType)**
 
 ## 默认
 
@@ -68,6 +72,13 @@ public class SimpleEmptyView extends StateEmptyView {
         super.onDetachedFromWindow(viewHolder);
     }
 }
+```
+
+## 混淆
+
+```java
+-keep me.simple.state_adapter.** { *; }
+-keepnames me.simple.state_adapter.** { *; }
 ```
 
 ## 版本迭代

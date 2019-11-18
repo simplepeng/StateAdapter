@@ -1,20 +1,16 @@
 package me.simple.demo;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -22,6 +18,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.drakeet.multitype.ItemViewBinder;
+import me.drakeet.multitype.Items;
+import me.drakeet.multitype.MultiTypeAdapter;
 import me.simple.state_adapter.StateAdapter;
 import me.simple.state_adapter.impl.SimpleEmptyView;
 import me.simple.state_adapter.impl.SimpleErrorView;
@@ -34,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     //    private RealAdapter realAdapter;
-    private BrvahAdapter brvahAdapter;
+//    private BrvahAdapter brvahAdapter;
+
+    private Items multiTypeItems = new Items();
+    private MultiTypeAdapter multiTypeAdapter = new MultiTypeAdapter(multiTypeItems);
 
     private List<String> items = new ArrayList<>();
 
@@ -50,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
 //        realAdapter = new RealAdapter();
-        brvahAdapter = new BrvahAdapter(items);
+//        brvahAdapter = new BrvahAdapter(items);
+        multiTypeAdapter.register(String.class, new ItemViewBinder());
 
-        stateAdapter = StateAdapter.wrap(brvahAdapter)
+        stateAdapter = StateAdapter.wrap(multiTypeAdapter)
                 .register(new SimpleEmptyView())
                 .register(new SimpleErrorView())
                 .register(new SimpleRetryView())
@@ -107,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
     public void contentClick(View view) {
         items.clear();
 //        realAdapter.notifyDataSetChanged();
-        brvahAdapter.notifyDataSetChanged();
+//        brvahAdapter.notifyDataSetChanged();
+        multiTypeAdapter.notifyDataSetChanged();
 
         stateAdapter.showLoading();
 
@@ -116,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 for (int i = 0; i < 10; i++) {
                     items.add(String.valueOf(i));
+                    multiTypeItems.add(String.valueOf(i));
                     stateAdapter.showContent();
                 }
             }
@@ -130,9 +135,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 for (int i = 0; i < 10; i++) {
                     items.add(String.valueOf(i));
+                    multiTypeItems.add(String.valueOf(i));
                 }
 //                realAdapter.notifyItemRangeInserted(items.size() - 11, 11);
-                brvahAdapter.notifyItemRangeInserted(items.size() - 11, 11);
+//                brvahAdapter.notifyItemRangeInserted(items.size() - 11, 11);
+                multiTypeAdapter.notifyItemRangeInserted(items.size() - 11, 11);
+
             }
         }, 2000);
     }
@@ -176,6 +184,20 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void convert(@NonNull BaseViewHolder helper, String item) {
             helper.setText(R.id.tv_item, item);
+        }
+    }
+
+    class ItemViewBinder extends me.drakeet.multitype.ItemViewBinder<String, VH> {
+
+        @NonNull
+        @Override
+        protected VH onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
+            return new VH(inflater.inflate(R.layout.item_layout, parent, false));
+        }
+
+        @Override
+        protected void onBindViewHolder(@NonNull VH holder, @NonNull String item) {
+            holder.tvItem.setText(item);
         }
     }
 }
