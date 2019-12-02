@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class androidx.recyclerview.widget.**{*;}
+ -keep class androidx.recyclerview.widget.**{*;}

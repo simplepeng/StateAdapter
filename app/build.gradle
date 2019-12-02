@@ -36,7 +36,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
     implementation 'me.drakeet.multitype:multitype:3.5.0'
 
-//    implementation project(path: ':state_adapter')
-    implementation 'me.simple:state-adapter:1.0.3'
+    implementation project(path: ':state_adapter')
+//    implementation 'me.simple:state-adapter:1.0.3'
 
 }
