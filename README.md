@@ -79,6 +79,7 @@ public class SimpleEmptyView extends StateEmptyView {
 ```java
 -keep me.simple.state_adapter.** { *; }
 -keepnames me.simple.state_adapter.** { *; }
+-keep class androidx.recyclerview.widget.**{*;}
 ```
 
 ## 版本迭代
