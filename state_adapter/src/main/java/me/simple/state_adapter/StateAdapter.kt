@@ -1,7 +1,6 @@
 package me.simple.state_adapter
 
 import android.annotation.SuppressLint
-import android.database.Observable
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import java.lang.IllegalArgumentException
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 @SuppressLint("NotifyDataSetChanged")
@@ -67,10 +64,8 @@ class StateAdapter<VH : ViewHolder> private constructor(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int, payloads: List<Any>) {
-        //如果是加载状态的ViewHolder
-        if (viewHolder is StateViewHolder) {
-            val holder = viewHolder
-        } else {
+        //如果不是加载状态的ViewHolder
+        if (viewHolder !is StateViewHolder) {
             bindAdapter.onBindViewHolder(asVH(viewHolder), position, payloads)
         }
     }
@@ -120,6 +115,7 @@ class StateAdapter<VH : ViewHolder> private constructor(
         bindAdapter.onDetachedFromRecyclerView(recyclerView)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun asVH(holder: ViewHolder) = holder as VH
 
     /**

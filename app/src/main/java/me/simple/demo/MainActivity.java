@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 .registerLoading(R.layout.adapter_loading_view)
                 .registerError(R.layout.adapter_error_view)
                 .registerRetry(R.layout.adapter_retry_view)
+                .registerCustom("login", R.layout.layout_login)
                 .wrap(multiTypeAdapter);
 
 //        stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
@@ -139,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 2000);
+    }
+
+    public void customClick(View view) {
+        stateAdapter.showCustom("login");
     }
 
     class RealAdapter extends RecyclerView.Adapter<VH> {
