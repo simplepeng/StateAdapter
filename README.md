@@ -14,11 +14,14 @@
 |  :--:  | :--:  |  :--:  |  :--:  |
 | ![](https://i.loli.net/2019/11/06/9emTI2Wkj36Opdl.png) | ![](https://i.loli.net/2019/11/06/VJqFStfwnMHN7dy.png) | ![](https://i.loli.net/2019/11/06/ERNpLygI1oM9tPb.png) | ![](https://i.loli.net/2019/11/06/igtEjTVl85Cov2Z.png) |
 
-
-## 依赖
+## 依赖 [![](https://jitpack.io/v/simplepeng/StateAdapter.svg)](https://jitpack.io/#simplepeng/StateAdapter)
 
 ```groovy
-implementation 'me.simple:state-adapter:1.0.3'
+maven { url 'https://jitpack.io' }
+```
+
+```groovy
+implementation 'com.github.simplepeng:StateAdapter:v1.0.4'
 ```
 
 
