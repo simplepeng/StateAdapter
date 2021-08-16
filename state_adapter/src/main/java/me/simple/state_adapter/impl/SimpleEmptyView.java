@@ -10,7 +10,7 @@ public class SimpleEmptyView extends StateEmptyView {
 
     @Override
     public int setLayoutRes() {
-        return R.layout.simple_empty_view;
+        return R.layout.adapter_empty_view;
     }
 
     @Override

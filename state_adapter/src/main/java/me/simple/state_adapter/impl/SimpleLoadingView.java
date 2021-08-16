@@ -7,6 +7,6 @@ public class SimpleLoadingView extends StateLoadingView {
 
     @Override
     public int setLayoutRes() {
-        return R.layout.simple_loading_view;
+        return R.layout.adapter_loading_view;
     }
 }

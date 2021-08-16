@@ -6,6 +6,6 @@ import me.simple.state_adapter.abs.StateRetryView;
 public class SimpleRetryView extends StateRetryView {
     @Override
     public int setLayoutRes() {
-        return R.layout.simple_retry_view;
+        return R.layout.adpater_retry_view;
     }
 }

@@ -9,7 +9,7 @@
         android:id="@+id/sa_retry"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/ic_retry_ac" />
+        android:src="@drawable/ic_state_retry" />
 
     <Button
         android:id="@+id/btn_state_retry"

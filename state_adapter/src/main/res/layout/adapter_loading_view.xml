@@ -9,6 +9,5 @@
         android:id="@+id/sa_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:visibility="visible" />
 </LinearLayout>

@@ -6,6 +6,6 @@ import me.simple.state_adapter.abs.StateErrorView;
 public class SimpleErrorView extends StateErrorView {
     @Override
     public int setLayoutRes() {
-        return R.layout.simple_error_view;
+        return R.layout.adapter_error_view;
     }
 }
