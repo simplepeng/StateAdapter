@@ -28,18 +28,24 @@ import me.simple.state_adapter.abs.StateView;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    //真正的Adapter
     private RecyclerView.Adapter mRealAdapter;
 
+    //状态预值
     public static final int TYPE_STATE_NORMAL = -111;
     public static final int TYPE_STATE_LOADING = 111;
     public static final int TYPE_STATE_EMPTY = 222;
     public static final int TYPE_STATE_ERROR = 333;
     public static final int TYPE_STATE_RETRY = 444;
     public static final int TYPE_STATE_CONTENT = 555;
+
+    //当前的状态
     private int mTypeState = TYPE_STATE_NORMAL;
 
+    //状态
     private SparseArray<StateView> mStateViewMap = new SparseArray<>();
 
+    //点击事件
     private SparseArray<View.OnClickListener> mViewClicks = new SparseArray<>();
 
     private StateAdapter(RecyclerView.Adapter adapter) {
@@ -74,6 +80,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        //如果是加载状态布局
         if (isTypeState()) {
             StateView stateView = getStateView(mTypeState);
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
@@ -85,6 +92,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             setClick(stateItemView, stateViewHolder);
             return stateViewHolder;
         }
+        //
         return mRealAdapter.onCreateViewHolder(viewGroup, viewType);
     }
 
@@ -95,6 +103,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position, List<Object> payloads) {
+        //如果是加载状态的ViewHolder
         if (viewHolder instanceof StateViewHolder) {
             final StateViewHolder holder = (StateViewHolder) viewHolder;
         } else {
@@ -160,7 +169,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /**
-     *
+     * 设置能占满一屏
      */
     private void setFullSpan(RecyclerView recyclerView) {
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -180,7 +189,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /**
-     *
+     * 是否注册过DataObserver
      */
     private boolean isRegistered() {
         boolean isRegistered = false;
@@ -200,7 +209,7 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return isRegistered;
     }
 
-    private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
+    private final RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
             mTypeState = TYPE_STATE_CONTENT;
@@ -254,6 +263,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return this;
     }
 
+    /**
+     * 获取状态布局
+     */
     private StateView getStateView(int type) {
         StateView stateView = mStateViewMap.get(type);
         if (stateView == null) {
@@ -310,6 +322,9 @@ public class StateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         StateAdapter.this.notifyDataSetChanged();
     }
 
+    /**
+     * 是否是状态
+     */
     private boolean isTypeState() {
         return mTypeState == TYPE_STATE_LOADING
                 || mTypeState == TYPE_STATE_EMPTY
