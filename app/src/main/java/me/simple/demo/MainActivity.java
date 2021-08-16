@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 .registerCustom("login", R.layout.layout_login)
                 .wrap(multiTypeAdapter);
 
-//        stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                contentClick(v);
-//            }
-//        });
+        stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentClick(v);
+            }
+        });
 
         recyclerView.setAdapter(stateAdapter);
 

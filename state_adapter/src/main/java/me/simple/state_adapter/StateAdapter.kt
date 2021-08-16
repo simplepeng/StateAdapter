@@ -237,7 +237,10 @@ class StateAdapter<VH : ViewHolder> private constructor(
     private val isTypeState: Boolean
         get() = builder.stateMap.containsKey(mTypeState)
 
-    private fun setClick(itemView: View, stateViewHolder: StateViewHolder) {
+    /**
+     *
+     */
+    private fun setClick(itemView: View, holder: StateViewHolder) {
         for (i in 0 until mViewClicks.size()) {
             val viewId = mViewClicks.keyAt(i)
             val clickListener = mViewClicks.valueAt(i)
@@ -246,10 +249,12 @@ class StateAdapter<VH : ViewHolder> private constructor(
         }
     }
 
-//    fun setOnItemViewClickListener(viewId: Int, listener: View.OnClickListener): StateAdapter {
-//        mViewClicks.put(viewId, listener)
-//        return this
-//    }
+    /**
+     * 设置点击事件
+     */
+    fun setOnItemViewClickListener(viewId: Int, listener: View.OnClickListener) {
+        mViewClicks.put(viewId, listener)
+    }
 
     companion object {
 
