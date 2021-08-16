@@ -18,14 +18,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.drakeet.multitype.ItemViewBinder;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 import me.simple.state_adapter.StateAdapter;
-import me.simple.state_adapter.impl.SimpleEmptyView;
-import me.simple.state_adapter.impl.SimpleErrorView;
-import me.simple.state_adapter.impl.SimpleLoadingView;
-import me.simple.state_adapter.impl.SimpleRetryView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,18 +50,19 @@ public class MainActivity extends AppCompatActivity {
 //        brvahAdapter = new BrvahAdapter(items);
         multiTypeAdapter.register(String.class, new ItemViewBinder());
 
-        stateAdapter = StateAdapter.wrap(multiTypeAdapter)
-                .register(new SimpleEmptyView())
-                .register(new SimpleErrorView())
-                .register(new SimpleRetryView())
-                .register(new SimpleLoadingView());
+        stateAdapter = StateAdapter.newBuilder()
+                .registerEmpty(R.layout.adapter_empty_view)
+                .registerLoading(R.layout.adapter_loading_view)
+                .registerError(R.layout.adapter_error_view)
+                .registerRetry(R.layout.adapter_retry_view)
+                .wrap(multiTypeAdapter);
 
-        stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                contentClick(v);
-            }
-        });
+//        stateAdapter.setOnItemViewClickListener(R.id.btn_state_retry, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                contentClick(v);
+//            }
+//        });
 
         recyclerView.setAdapter(stateAdapter);
 

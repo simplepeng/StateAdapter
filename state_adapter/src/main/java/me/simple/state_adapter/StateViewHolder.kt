@@ -1,29 +1,15 @@
-package me.simple.state_adapter;
+package me.simple.state_adapter
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
-import android.view.View;
-import android.view.ViewGroup;
+class StateViewHolder(itemView: View) : ViewHolder(itemView) {
 
-public class StateViewHolder extends RecyclerView.ViewHolder {
-
-    private int mTypeState;
-
-    public StateViewHolder(@NonNull View itemView) {
-        super(itemView);
-        ViewGroup.LayoutParams params = itemView.getLayoutParams();
-        if (params instanceof StaggeredGridLayoutManager.LayoutParams) {
-            ((StaggeredGridLayoutManager.LayoutParams) params).setFullSpan(true);
+    init {
+        val params = itemView.layoutParams
+        if (params is StaggeredGridLayoutManager.LayoutParams) {
+            params.isFullSpan = true
         }
-    }
-
-    public void setState(int typeState) {
-        this.mTypeState = typeState;
-    }
-
-    public int getTypeSate() {
-        return mTypeState;
     }
 }
