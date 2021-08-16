@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.util.concurrent.atomic.AtomicBoolean
 
 @SuppressLint("NotifyDataSetChanged")
-class StateAdapter<VH : ViewHolder> private constructor(
+open class StateAdapter<VH : ViewHolder> private constructor(
     private val builder: Builder,
     val bindAdapter: RecyclerView.Adapter<VH>
 ) : RecyclerView.Adapter<ViewHolder>() {
@@ -22,6 +22,9 @@ class StateAdapter<VH : ViewHolder> private constructor(
 
     //点击事件
     private val mViewClicks = SparseArray<View.OnClickListener>()
+
+    //onBindViewHolder的回调
+    var onBindViewHolder: ((holder: StateViewHolder) -> Unit)? = null
 
     override fun getItemCount(): Int {
         return if (isTypeState)
@@ -67,6 +70,8 @@ class StateAdapter<VH : ViewHolder> private constructor(
         //如果不是加载状态的ViewHolder
         if (viewHolder !is StateViewHolder) {
             bindAdapter.onBindViewHolder(asVH(viewHolder), position, payloads)
+        } else {
+            onBindViewHolder?.invoke(viewHolder)
         }
     }
 
